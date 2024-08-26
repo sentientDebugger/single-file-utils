@@ -5,15 +5,20 @@
 # and the working directory.
 
 __prompt_prefix() {
-    white=$(tput setaf 7)
-    cyan=$(tput setaf 6)
-    reset_txt=$(tput sgr0)
+    # @TODO
+    # Seems like the $'\x01' and $'\x02' ('[' and ']' respectively) may be
+    # optional? Prompt seems to work fine without them?
+    # Maybe use only those characters to detect what should be removed by
+    # __remove_colors() and __remove_all()?
+    white=$'\x01'$(tput setaf 7)$'\x02'
+    cyan=$'\x01'$(tput setaf 6)$'\x02'
+    reset_txt=$'\x01'$(tput sgr0)$'\x02'
 
     __remove_all() {
         r=$1
         shift
         for pattern in "$@"; do
-            r="${r//$pattern/}"
+            r=${r//"$pattern"/}
         done
         echo "$r"
     }
@@ -41,4 +46,4 @@ __prompt_prefix() {
     echo "${prefix_line}"
 }
 PROMPT_COMMAND='PS1_CMD1=$(__prompt_prefix)'
-PS1='${PS1_CMD1}\n$(tput setaf 7)\u@\w\$$(tput sgr0) '
+PS1='${PS1_CMD1}\n\[$(tput setaf 7)\]\u@\w\$\[$(tput sgr0)\] '
