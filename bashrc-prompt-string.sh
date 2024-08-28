@@ -26,10 +26,14 @@ __prompt_prefix() {
         __remove_all "$1" "$white" "$cyan" "$reset_txt"
     }
 
-    dt="$(date '+%Y-%m-%dT%T.%3N%:z')"
     current_branch="$(git branch --show-current 2>/dev/null)"
 
-    prefix_line="${white}${dt}"
+    home_dir="${HOME}/"
+    current_dir="${PWD}/"
+    current_dir=${current_dir/#"${home_dir}"/"~/"}
+    current_dir=${current_dir%"/"}
+
+    prefix_line="┌─[${white}${USER}@${current_dir}${reset_txt}]"
     if [[ -n $current_branch ]]; then
         prefix_line="${prefix_line} ${cyan}(${current_branch})"
     fi
@@ -46,4 +50,4 @@ __prompt_prefix() {
     echo "${prefix_line}"
 }
 PROMPT_COMMAND='PS1_CMD1=$(__prompt_prefix)'
-PS1='${PS1_CMD1}\n\[$(tput setaf 7)\]\u@\w\$\[$(tput sgr0)\] '
+PS1='${PS1_CMD1}\n└──\[$(tput setaf 7)\]\$\[$(tput sgr0)\] '
