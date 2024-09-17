@@ -1,4 +1,4 @@
-((length = 10) => {
+((desiredPwdlength = 15) => {
   // function to generate a password
   const lowerCaseLetters = [
     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
@@ -14,15 +14,17 @@
     '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+',
     '[', '{', ']', '}', '|', ';', ':', ',', '<', '.', '>', '/', '?'
   ];
-  function getRandomInt(max) {
-    // generates a random int from 0 to max-1
-    return Math.floor(Math.random() * Math.floor(max));
+  function getRandomInt(min, max) {
+    // generates a random int from min to max (both inclusive)
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   };
   function genCharFunc(arr) {
     return function(count = 2) {
-      var ret = '', idx;
+      let ret = '', idx;
       for (let i = 0; i < count; i++) {
-        idx = getRandomInt(arr.length);
+        idx = getRandomInt(0, arr.length - 1);
         ret += arr[idx];
       }
       return ret;
@@ -35,18 +37,18 @@
   function shuffleArr(arr) {
     const ret = [];
     for(let i = arr.length - 1; i >= 0; i--) {
-      ret.push(arr.splice(getRandomInt(i), 1)[0]);
+      ret.push(arr.splice(getRandomInt(0, i), 1)[0]);
     }
     return ret;
   };
   const funcArr = shuffleArr([getLower, getUpper, getNumber, getSymbol]);
-  var password = '', i = 0;
-  while(password.length < length) {
-    password += funcArr[i]();/* default 2 chars of each */
+  let password = '', i = 0;
+  while (password.length < desiredPwdlength) {
+    password += funcArr[i](getRandomInt(1, 4));/* 1 to 4 chars of each */
     i++;
     if (i >= funcArr.length) {
       i = 0;
     }
   }
-  return password.substr(0, length);
+  return password.substring(0, desiredPwdlength);
 })();
